@@ -13,7 +13,7 @@ class rowde:
         self.threeDlist=[]
         self.image_color=[(0, 0, 128),(255,236,139),(119, 172, 152),(238,59,59),(0,255,255),(139,139,0),(127,255,0),(0,238,238),(255,105,180),(255,52,179),(255,255,0)]
         self.image_roud1=[]
-        self.god_one = [['*' for one in range(self.NumOfRow)] for tow in range(self.numOfCol)]
+        self.good_one = [['*' for one in range(self.NumOfRow)] for tow in range(self.numOfCol)]
         self.mainArray1 = [[0 for one in range(self.NumOfRow)] for tow in range(self.numOfCol)]#the final list for generat more then one rowde
     def take_inputs(self): #take start,end inputs
         self.int1 = str(input("write the start cordinate in the format num of colume,numer of the row: "))
@@ -149,11 +149,11 @@ class rowde:
                 row11=SKpeeker[0]
                 col11 = SKpeeker[1]
                 self.mainArray1[row11][col11]=self.finaly
-                self.god_one[row11][col11] = str(self.finaly)
+                self.good_one[row11][col11] = str(self.finaly)
                 SK.pop()                       #pop of my STACK !!!!
             print('finally one',self.finaly)
             self.image_roud1.append(self.finaly)
-            for one in self.god_one:
+            for one in self.good_one:
                 print(''.join((x for x in one)))
     def photo_outout (self,drow,location) :  #NOT:the left sidre of the image in the batume in our foto
         img1 = Image.new('RGB', (self.NumOfRow,self.numOfCol), color=0)  # midean filter images
@@ -169,9 +169,17 @@ class rowde:
         img1.save(location)
         img1.show()
 
-
-
+    def write_to_txt_file(self):
+        f=open('generated_maz.txt','a')
+        f.write('\n')
+        f.write('------------------------------------------new maze----------------------------------------------')
+        for write in self.good_one:
+            f.write('\n')
+            for write1 in write:
+                f.write(str(write1))
+        f.close()
 row=rowde()
 row.evolve()
 row.solve()
 row.photo_outout(row.mainArray1,'C:\\Users\\Abdulrrahman\\python\\maze.tif')
+row.write_to_txt_file()
