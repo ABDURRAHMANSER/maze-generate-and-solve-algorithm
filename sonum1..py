@@ -9,9 +9,9 @@ class rowde:
     UP =[-1,0]
     l1=[RIGHT,DOWN,LEFT,UP]
     def __init__(self):
-        self.numOfCol,self.NumOfRow = 50,50 #the leghnt of our maze
+        self.numOfCol,self.NumOfRow = 70,70 #the leghnt of our maze
         self.threeDlist=[]
-        self.image_color=[(0, 0, 128),(255,236,139),(119, 172, 152),(238,59,59),(0,255,255),(139,139,0),(127,255,0),(0,238,238),(255,105,180),(255,52,179),(255,255,0)]
+        self.image_color=[(0, 0, 128),(255,236,139),(119, 172, 152),(240,189,122),(220,225,219),(238,59,59),(0,255,255),(139,139,0),(127,255,0),(0,238,238),(255,105,180),(255,52,179),(255,255,0)]
         self.image_roud1=[]
         self.good_one = [['*' for one in range(self.NumOfRow)] for tow in range(self.numOfCol)]
         self.mainArray1 = [[0 for one in range(self.NumOfRow)] for tow in range(self.numOfCol)]#the final list for generat more then one rowde
@@ -181,5 +181,5 @@ class rowde:
 row=rowde()
 row.evolve()
 row.solve()
-row.photo_outout(row.mainArray1,'C:\\Users\\Abdulrrahman\\python\\maze.tif')
+row.photo_outout(row.mainArray1,'C:\\Users\\Abdulrrahman\\GMT203\\maze.tif')
 row.write_to_txt_file()
