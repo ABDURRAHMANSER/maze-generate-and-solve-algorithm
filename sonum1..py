@@ -9,12 +9,12 @@ class rowde:
     UP =[-1,0]
     l1=[RIGHT,DOWN,LEFT,UP]
     def __init__(self):
-        self.numOfCol,self.NumOfRow = 70,70 #the leghnt of our maze
+        self.numOfCol,self.NumOfRow = 50,50 #the leghnt of our maze
         self.threeDlist=[]
         self.image_color=[(0, 0, 128),(255,236,139),(119, 172, 152),(240,189,122),(220,225,219),(238,59,59),(0,255,255),(139,139,0),(127,255,0),(0,238,238),(255,105,180),(255,52,179),(255,255,0)]
         self.image_roud1=[]
-        self.good_one = [['*' for one in range(self.NumOfRow)] for tow in range(self.numOfCol)]
-        self.mainArray1 = [[0 for one in range(self.NumOfRow)] for tow in range(self.numOfCol)]#the final list for generat more then one rowde
+        self.good_one = [['*' for one in range(self.numOfCol)] for tow in range(self.NumOfRow)]
+        self.mainArray1 = [[0 for one in range(self.numOfCol)] for tow in range(self.NumOfRow)]#the final list for generat more then one rowde
     def take_inputs(self): #take start,end inputs
         self.int1 = str(input("write the start cordinate in the format num of colume,numer of the row: "))
         self.int1=self.int1.split(',')
@@ -30,7 +30,7 @@ class rowde:
         self.int1x, self.int1y, self.endx,self.endy, self.roudinput= self.take_inputs() #pass inputs
         for i in range( self.roudinput):              #generat my mazes
             start = time.time()
-            self.mainArray =[[0 for one in range(self.NumOfRow)] for tow in range(self.numOfCol) ]#creat our list
+            self.mainArray =[[0 for one in range(self.numOfCol)] for tow in range(self.NumOfRow) ]#creat our list
             break1 = True
             self.l2 = []  # creat strt move coor. list
             self.l3 = []  # creat the end move coor list
@@ -54,7 +54,7 @@ class rowde:
                 self.num_row_start = self.num_row_start + self.start_rand[1]
                 if self.num_row_start <0 : # all this probebilty to make the brogram stay in the list range
                     self.num_row_start=self.num_row_start*-1
-                elif  self.num_row_start>self.numOfCol-1:
+                elif  self.num_row_start>self.NumOfRow-1:
                     self.num_row_start = self.num_row_start -1
                 if self.num_col_start <0 :
                     self.num_col_start=self.num_col_start*-1
@@ -66,7 +66,7 @@ class rowde:
                     self.num_col_end = self.num_col_end -1
                 if self.num_row_end <0 :
                     self.num_row_end = self.num_row_end * -1
-                elif  self.num_row_end >self.numOfCol-1:
+                elif  self.num_row_end >self.NumOfRow-1:
                     self.num_row_end = self.num_row_end  -1
                 check_tgret1=-1
                 for tagret1 in self.l2 :
@@ -88,7 +88,7 @@ class rowde:
                 for item in range( len(self.l2)):
                     if self.l2[item] in self.l3 or self.l2[-item] in self.l3 :           #SO I HAVE WROUD!!!!!!!
                         print('done',i+1)                                        #NOT we start from the front  and the back
-                        for t in range (len(self.mainArray)):
+                        for t in range (len(self.mainArray)):                   #so check function is faster by two time
                             print(self.mainArray[t])
                         break1=False
                         self.threeDlist.append(self.mainArray)
@@ -123,7 +123,7 @@ class rowde:
                                 break
                         else:
                             passes += 1          # increse pass
-                        if passes == 4:          # close rowde
+                        if passes == 4:          # close road
                             SK.pop()             #popo of my STACK  !!!!!!
                             the3dchecker[self.endx1][self.endy1] = '!' # close wroud
                             peek=SK.peek()
@@ -156,16 +156,11 @@ class rowde:
             for one in self.good_one:
                 print(''.join((x for x in one)))
     def photo_outout (self,drow,location) :  #NOT:the left sidre of the image in the batume in our foto
-        img1 = Image.new('RGB', (self.NumOfRow,self.numOfCol), color=0)  # midean filter images
-        image_row=-1
-        for x in drow:
-            image_row+=1
-            image_col = -1
-            for y in x:
-                image_col+=1
-                for image_roud in self.image_roud1:
-                    if y==image_roud:
-                        img1.putpixel((image_row,image_col),self.image_color[y])
+        img1 = Image.new('RGB', (len(drow),len(drow[0])), color=0)  # midean filter images
+        for x in range(len(drow)):
+            for y in range(len(drow[0])):
+                if drow[x][y]!=0:
+                    img1.putpixel((x,y),self.image_color[drow[x][y]])
         img1.save(location)
         img1.show()
 
