@@ -2,6 +2,7 @@ import random
 from Stack import *
 import time
 from PIL import Image
+import matplotlib.pyplot as plt
 class rowde:
     RIGHT =[0,1] #deteermain the move busetion
     DOWN =[1,0]
@@ -11,10 +12,9 @@ class rowde:
     def __init__(self):
         self.numOfCol,self.NumOfRow = 50,50 #the leghnt of our maze
         self.threeDlist=[]
-        self.image_color=[(0, 0, 128),(255,236,139),(119, 172, 152),(240,189,122),(220,225,219),(238,59,59),(0,255,255),(139,139,0),(127,255,0),(0,238,238),(255,105,180),(255,52,179),(255,255,0)]
-        self.image_roud1=[]
+        self.image_color=[(0, 0, 128),(250,1,1),(204,0,204),(255,236,139),(255,105,180),(119, 172, 152),(0,100,0),(238,232,170),(240,189,122),(220,225,219),(238,59,59),(0,255,255),(139,139,0),(127,255,0),(0,238,238),(255,105,180),(255,52,179),(255,255,0)]
         self.good_one = [['*' for one in range(self.numOfCol)] for tow in range(self.NumOfRow)]
-        self.mainArray1 = [[0 for one in range(self.numOfCol)] for tow in range(self.NumOfRow)]#the final list for generat more then one rowde
+        self.mainArray1 = [[0 for one in range(self.numOfCol)] for tow in range(self.NumOfRow)]   #the final list for generat more then one rowde
     def take_inputs(self): #take start,end inputs
         self.int1 = str(input("write the start cordinate in the format num of colume,numer of the row: "))
         self.int1=self.int1.split(',')
@@ -25,6 +25,7 @@ class rowde:
         self.endx = int(self.int2[0])
         self.endy = int(self.int2[1])
         self.roudinput=int(input('please enter the number of the rouds that you want to generat: '))
+        self.process_time = [[] for one in range(self.roudinput)]
         return  self.int1x,self.int1y,self.endx,self.endy,  self.roudinput
     def evolve(self):
         self.int1x, self.int1y, self.endx,self.endy, self.roudinput= self.take_inputs() #pass inputs
@@ -85,15 +86,24 @@ class rowde:
                         self.num_row_start=recoord2[0]
                         self.num_col_start=recoord2[1]
                         del self.l3[check_tgret]
-                for item in range( len(self.l2)):
-                    if self.l2[item] in self.l3 or self.l2[-item] in self.l3 :           #SO I HAVE WROUD!!!!!!!
+                for item in range( int(len(self.l2)/2)):
+                    if self.l2[item] in self.l3 or self.l2[-item-1] in self.l3 :           #SO I HAVE WROUD!!!!!!!
                         print('done',i+1)                                        #NOT we start from the front  and the back
                         for t in range (len(self.mainArray)):                   #so check function is faster by two time
                             print(self.mainArray[t])
                         break1=False
                         self.threeDlist.append(self.mainArray)
                         break
+                if len(self.l2)&2==0: #if the len of our list is odd so that we have chack the midal item
+                    if len(self.l2)!=0:
+                        if self.l2[len(self.l2)//2] in self.l3:
+                            print('done', i + 1)
+                            for t in range(len(self.mainArray)):
+                                print(self.mainArray[t])
+                            break1 = False
+                            self.threeDlist.append(self.mainArray)
             end = time.time()
+            self.process_time[i].append (end-start)
             print('process time',end-start)
     def solve(self):
         self.finaly = 0
@@ -104,55 +114,70 @@ class rowde:
             self.break2 = True
             self.endx1=self.endy
             self.endy1 = self.endx
-            the3dchecker[self.endx1][self.endy1]=2
+            the3dchecker[self.endx][self.endy]=2
             while self.break2 == True:              # maze solver ^_^ ^_^ ^_^
                 passes = 0
                 for dir in rowde.l1:                # RIGHT,DOWN,LEFT,UP
+                    dbugx=0
+                    dbugy=0
+                    if dir[0] + self.endx1 < 0:         #write this condition to keep list in the range
+                        dbugx+=1
+                    elif dir[1] + self.endy1< 0:
+                        dbugy += 1
+                    if dir[0] + self.endx1 > self.NumOfRow:         #write this condition to keep list in the range
+                        dbugx -= 1
+                    elif dir[1] + self.endy1> self.numOfCol:
+                        dbugy -= 1
                     try:                          # using try.. to  except ringe out of the list error
-                        if the3dchecker[dir[0] + self.endx1][dir[1] + self.endy1] == 1:
+                        if the3dchecker[dir[0] + dbugx+self.endx1][dir[1] +dbugy+ self.endy1] == 1:
                             self.endx1 += dir[0] # change endx1 and endy1 !!!!!!!!
                             self.endy1 += dir[1]
-                            the3dchecker[ self.endx1][ self.endy1] = 2  # pass wroud 2
-                            if self.endx1 < 0:
-                                self.endx1 = self.endx1 * -1
-                            elif self.endy1 < 0:
-                                self.endy1 = self.endy1 * -1
+
+                            the3dchecker[self.endx1][self.endy1] = 2  # pass wroud 2
                             SK.push([self.endx1, self.endy1]) #push to my STACK !!!!
                             if (self.endx1==self.int1y) and (self.endy1==self.int1x):
                                 self.break2 = False
                                 break
                         else:
                             passes += 1          # increse pass
-                        if passes == 4:          # close road
-                            SK.pop()             #popo of my STACK  !!!!!!
-                            the3dchecker[self.endx1][self.endy1] = '!' # close wroud
+                        if passes == 4 or passes == 5 :          # close road
                             peek=SK.peek()
                             self.endx1 = peek[0]
                             self.endy1 = peek[1]
-                            the3dchecker[peek[0]][peek[1]]=2
-                        if SK.isEmpty == True:
-                            print('no wroud')
-                    except:                     # increse passes
-                        passes += 1
-                        if passes == 4:  # close rowde
-                            SK.pop()  # popo of my STACK  !!!!!!
                             the3dchecker[self.endx1][self.endy1] = '!'  # close wroud
+                            SK.pop()  # popo of my STACK  !!!!!!
                             peek = SK.peek()
                             self.endx1 = peek[0]
                             self.endy1 = peek[1]
-                            the3dchecker[peek[0]][peek[1]] = 2
+                            if peek[0] ==self.endx and peek[1]==self.endy:
+                                the3dchecker[peek[0]][peek[1]]=2
                         if SK.isEmpty == True:
                             print('no wroud')
-                            break
+                            self.break2 = False
+                    except:                     # increse passes
+                        passes += 1
+                        if passes == 4 or passes==5:  # close rowde
+                            peek = SK.peek()
+                            self.endx1 = peek[0]
+                            self.endy1 = peek[1]
+                            the3dchecker[self.endx1][self.endy1] = '!'  # close wroud
+                            SK.pop()  # popo of my STACK  !!!!!!
+                            peek = SK.peek()
+                            self.endx1 = peek[0]
+                            self.endy1 = peek[1]
+                            if peek[0] == self.endx and peek[1] == self.endy:
+                                the3dchecker[peek[0]][peek[1]] = 2
+                        if SK.isEmpty == True:
+                            print('no wroud')
+                            self.break2 = False
             for SK_adder in range(SK.size()):
                 SKpeeker=SK.peek()
                 row11=SKpeeker[0]
                 col11 = SKpeeker[1]
                 self.mainArray1[row11][col11]=self.finaly
-                self.good_one[row11][col11] = str(self.finaly)
+                self.good_one[row11][col11] = str(self.finaly) #'.' as teacher want
                 SK.pop()                       #pop of my STACK !!!!
             print('finally one',self.finaly)
-            self.image_roud1.append(self.finaly)
             for one in self.good_one:
                 print(''.join((x for x in one)))
     def photo_outout (self,drow,location) :  #NOT:the left sidre of the image in the batume in our foto
@@ -161,20 +186,31 @@ class rowde:
             for y in range(len(drow[0])):
                 if drow[x][y]!=0:
                     img1.putpixel((x,y),self.image_color[drow[x][y]])
+                else:
+                    img1.putpixel((x, y), 0)
         img1.save(location)
         img1.show()
-
     def write_to_txt_file(self):
         f=open('generated_maz.txt','a')
         f.write('\n')
-        f.write('------------------------------------------new maze----------------------------------------------')
+        f.write('-----------------------------------------------new maze----------------------------------------------')
+        f.write('\n')
+        f.write('START ')
+        f.write(str(self.int1))
+        f.write('\n')
+        f.write('END  ')
+        f.write(str(self.int2))
         for write in self.good_one:
             f.write('\n')
             for write1 in write:
                 f.write(str(write1))
         f.close()
+    def plot_dataa(self): #creat my plot function
+        plt.boxplot(self.process_time)
+        plt.show()
 row=rowde()
 row.evolve()
 row.solve()
-row.photo_outout(row.mainArray1,'C:\\Users\\Abdulrrahman\\GMT203\\maze.tif')
+row.photo_outout(row.mainArray1,'C:\\Users\\Abdulrrahman\\GMT203\\maze 2x2.tif')
 row.write_to_txt_file()
+row.plot_dataa()
