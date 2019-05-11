@@ -1,2 +1,4 @@
-# GMT203
-we do this project for a homework at the school and to make the project updeat is more flixable and easyer   
+generate maze
+this algorithm is to generate maze with a given number of path and make a photograph to it more clear and more
+ understandable 
+  
